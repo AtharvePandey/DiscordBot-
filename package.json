@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/AtharvePandey/DiscordBot-#readme",
   "dependencies": {
-    "discord.js": "^14.13.0",
-    "spotify-web-api-js": "^1.5.2"
+    "discord.js": "^14.13.0"
   }
 }

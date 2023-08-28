@@ -1,7 +1,5 @@
 import { BOT_TOKEN } from './secretVars';
 const {Client, Message, SlashCommandBuilder} = require('discord.js'); //returns an object of discord.js and gives reference to "Client" variable
-const Spotify = require('spotify-web-api-js');
-const spotify = new Spotify(); 
 const ronBot = new Client(); 
 const token = BOT_TOKEN
 
@@ -43,13 +41,13 @@ ronBot.on('messageCreate', message =>{
                     if(message.content.includes("joke")){ //user has requested a joke
                         message.reply("you are the joke lol!");
                     }else if(message.content.includes("kanye")){
-                        fetch("https://api.kanye.rest").then(val => {
+                        fetch("https://api.kanye.rest").then(val => { //using the kanye rest api
                             val.json().then(str => {
                                 message.reply("here is a quote by kanye: " + str.quote);
                             })
                         })
-                    }else if(message.content.includes("song")){
-
+                    }else if(message.content.includes("song")){ //using the spotify api
+                        
                     }
                 })
             }
