@@ -45,7 +45,7 @@ const greetingsArr = [
 ];
 
 const commandsObj = {
-  "joke": "insults whoever asked for it (20% chance), or makes an original joke fetched from the joke API",
+  joke: "insults whoever asked for it (20% chance), or makes an original joke fetched from the joke API",
   "kanye quote": "returns a random quote from kanye using the rest API",
   "fun fact": "returns a random fun fact",
 };
@@ -57,63 +57,65 @@ ronBot.on("ready", () => {
   console.log("logged in, and connected to the API!");
 });
 
-ronBot.on("messageCreate", (message) => {
-  if (message.author.bot) return;
+ronBot.on("messageCreate", async (message) => {
+  if (message.author.bot) {
+    return;
+  }
+
+  let awaitResponse = false;
 
   if (message.mentions.has(ronBot.user.id)) {
-    //case where the bot was mentioned
-    //generate a reply message with the possible commands given
-    let greeting = greetingsArr[Math.floor(Math.random() * greetingsArr.length)] + message.author.displayName + "? \n";
+    // Display greeting and commands
+    let greeting =
+      greetingsArr[Math.floor(Math.random() * greetingsArr.length)] +
+      message.author.displayName +
+      "? \n";
     greeting = greeting.concat("Here is what I can do: " + "\n\n");
     Object.entries(commandsObj).forEach(([key, value]) => {
-      //the entries method returns an array of key value pairs, and the
       greeting += `${key}: ${value}\n\n`;
     });
-    message.reply(greeting).then(() => { //so basically the old way i had checked if(val) but failed to aknowledge that its just the message the bot replied with not a boolean
-        //so once the greeting has been replied with, lets add another event listener for what we want...
-        ronBot.on("messageCreate", (message) => {
-        if (message.content.includes("joke")) {
-          //user has requested a joke
-          //generate a random number between 1 and 5, so theres a 20% chance user gets insulted when asked for a joke
-          let num = Math.floor(Math.random() * (5 - 1) + 1);
-          if (num == 1) {
-            //small chance the request invokes the bot to roast the user
-            message.reply("you're the joke lol");
-          }else {
-            //now we call the api
-            fetch("https://v2.jokeapi.dev/joke/Any").then((data) => {
-              data.json().then((json) => {
-                if (json.type == "twopart") {
-                  const joke = json.setup + "\n" + json.delivery;
-                  message.reply(joke);
-                } else {
-                  message.reply(json.joke);
-                }
-              });
-            });
-          }
-        } else if (message.content.includes("kanye")) {
-          fetch("https://api.kanye.rest").then((val) => {
-            //using the kanye rest api
-            val.json().then((str) => {
-              message.reply("here is a quote by kanye: " + str.quote);
-            });
+    await message.reply(greeting);
+    awaitResponse = true;
+  }
+
+  if (awaitResponse) {
+    if (message.content.includes("joke")) {
+      //user has requested a joke
+      //generate a random number between 1 and 5, so theres a 20% chance user gets insulted when asked for a joke
+      let num = Math.floor(Math.random() * (5 - 1) + 1);
+      if (num == 1) {
+        //small chance the request invokes the bot to roast the user
+        message.reply("you're the joke lol");
+      } else {
+        //now we call the api
+        fetch("https://v2.jokeapi.dev/joke/Any").then((data) => {
+          data.json().then((json) => {
+            if (json.type == "twopart") {
+              const joke = json.setup + "\n" + json.delivery;
+              message.reply(joke);
+            } else {
+              message.reply(json.joke);
+            }
           });
-        }else if (message.content.includes("fact")) {
-          fetch("https://api.api-ninjas.com/v1/facts?limit=1").then((data) => {
-            data.json().then((json) => {
-              message.reply(json.fact);
-            });
-          });
-        }
+        });
+      }
+    } else if (message.content.includes("kanye")) {
+      fetch("https://api.kanye.rest").then((val) => {
+        //using the kanye rest api
+        val.json().then((str) => {
+          message.reply("here is a quote by kanye: " + str.quote);
+        });
       });
-    });
+    } else if (message.content.includes("fact")) {
+      fetch("https://api.api-ninjas.com/v1/facts?limit=1").then((data) => {
+        data.json().then((json) => {
+          message.reply(json.fact);
+        });
+      });
+    }
   } else {
     message.reply(
       "Atharve made a small bug in the code, you shouldn't be reading this line at all, so someone tell him to quit being so bad at coding!"
     );
   }
 });
-
-
-
