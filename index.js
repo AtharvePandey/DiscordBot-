@@ -121,125 +121,254 @@
 //   }
 // });
 
-const { BOT_TOKEN } = require("./secretVars");
-const { Client, GatewayIntentBits } = require("discord.js");
-const fetch = require("node-fetch");
-const ronBot = new Client({
-  intents: [GatewayIntentBits.MessageContent],
-});
-const token = BOT_TOKEN;
+// const { BOT_TOKEN } = require("./secretVars");
+// const { Client, GatewayIntentBits } = require("discord.js");
+// const ronBot = new Client({
+//   intents: [GatewayIntentBits.MessageContent],
+// });
+// const token = BOT_TOKEN;
 
-const greetingsArr = [
-  "Hey there! What's up ",
-  "Ew, go away, I'm busy... doing other things... fine, what do you want ",
-  "I am Ron. What do you want ",
-  "Go bother Kal or Atharve. Never mind, what do you want ",
-  "What ",
-  "What's up ",
-  "Ew, it's ",
-];
+// const greetingsArr = [
+//   "Hey there! What's up ",
+//   "Ew, go away, I'm busy... doing other things... fine, what do you want ",
+//   "I am Ron. What do you want ",
+//   "Go bother Kal or Atharve. Never mind, what do you want ",
+//   "What ",
+//   "What's up ",
+//   "Ew, it's ",
+// ];
 
-ronBot.login(token);
+// ronBot.login(token);
 
-ronBot.once("ready", () => {
-  console.log("Logged in and connected to the API!");
-  setBotPresence();
-});
+// ronBot.once("ready", () => {
+//   console.log("Logged in and connected to the API!");
+//   setBotPresence();
+// });
 
-ronBot.on("messageCreate", handleMessage);
+// ronBot.on("messageCreate", handleMessage);
 
-//chatGPT wrote setBotPresence()
+// //chatGPT wrote setBotPresence()
 
-function setBotPresence() {
-  ronBot.user.setPresence({
-    activities: [{ name: "ronBot", type: "LISTENING" }],
-    status: "online",
+// function setBotPresence() {
+//   ronBot.user.setPresence({
+//     activities: [{ name: "ronBot", type: "LISTENING" }],
+//     status: "online",
+//   });
+// }
+
+// function handleMessage(message) {
+//   if (message.author.bot) return;
+
+//   if (message.mentions.has(ronBot.user.id)) {
+//     const command = message.content
+//       .slice(ronBot.user.id.length)
+//       .trim()
+//       .toLowerCase();
+
+//     switch (command) {
+//       case "joke":
+//         handleJokeCommand(message);
+//         break;
+//       case "kanye quote":
+//         handleKanyeQuoteCommand(message);
+//         break;
+//       case "fun fact":
+//         handleFunFactCommand(message);
+//         break;
+//       default:
+//         handleUnknownCommand(message);
+//         break;
+//     }
+//   }
+// }
+
+// function handleJokeCommand(message) {
+//   const num = Math.floor(Math.random() * 5) + 1;
+
+//   if (num === 1) {
+//     message.reply("You're the joke lol");
+//   } else {
+//     fetch("https://v2.jokeapi.dev/joke/Any")
+//       .then((response) => response.json())
+//       .then((json) => {
+//         const joke =
+//           json.type === "twopart" ? `${json.setup}\n${json.delivery}` : json.joke;
+//         message.reply(joke);
+//       })
+//       .catch(() => {
+//         message.reply("Failed to fetch a joke. Try again later.");
+//       });
+//   }
+// }
+
+// function handleKanyeQuoteCommand(message) {
+//   fetch("https://api.kanye.rest")
+//     .then((response) => response.json())
+//     .then((json) => {
+//       message.reply(`Here is a quote by Kanye West: "${json.quote}"`);
+//     })
+//     .catch(() => {
+//       message.reply("Failed to fetch a Kanye quote. Try again later.");
+//     });
+// }
+
+// function handleFunFactCommand(message) {
+//   fetch("https://api.api-ninjas.com/v1/facts?limit=1")
+//     .then((response) => response.json())
+//     .then((json) => {
+//       message.reply(json[0].fact);
+//     })
+//     .catch(() => {
+//       message.reply("Failed to fetch a fun fact. Try again later.");
+//     });
+// }
+
+// function handleUnknownCommand(message) {
+//   message.reply(
+//     `Hey there! I'm not sure what you're asking. Here are the available commands:\n${formatCommands()}`
+//   );
+// }
+
+// //chatGPT wrote the formatCommands() method
+
+// function formatCommands() {
+//   return Object.entries(commandsObj)
+//     .map(([command, description]) => `• **${command}**: ${description}`)
+//     .join("\n");
+// }
+
+// const commandsObj = {
+//   "joke": "Get a random joke or a 20% chance of being playfully insulted.",
+//   "kanye quote": "Receive a random quote from Kanye West.",
+//   "fun fact": "Learn a fun fact to amaze your friends.",
+// };
+
+const fetchPromise = import("node-fetch");
+
+fetchPromise.then((module) => {
+  const fetch = module.default;
+
+  const { BOT_TOKEN } = require("./secretVars");
+  const { Client, GatewayIntentBits } = require("discord.js");
+  const ronBot = new Client({
+    intents: [GatewayIntentBits.MessageContent],
   });
-}
+  const token = BOT_TOKEN;
 
-function handleMessage(message) {
-  if (message.author.bot) return;
+  const greetingsArr = [
+    "Hey there! What's up ",
+    "Ew, go away, I'm busy... doing other things... fine, what do you want ",
+    "I am Ron. What do you want ",
+    "Go bother Kal or Atharve. Never mind, what do you want ",
+    "What ",
+    "What's up ",
+    "Ew, it's ",
+  ];
 
-  if (message.mentions.has(ronBot.user.id)) {
-    const command = message.content
-      .slice(ronBot.user.id.length)
-      .trim()
-      .toLowerCase();
+  ronBot.login(token);
 
-    switch (command) {
-      case "joke":
-        handleJokeCommand(message);
-        break;
-      case "kanye quote":
-        handleKanyeQuoteCommand(message);
-        break;
-      case "fun fact":
-        handleFunFactCommand(message);
-        break;
-      default:
-        handleUnknownCommand(message);
-        break;
+  ronBot.once("ready", () => {
+    console.log("Logged in and connected to the API!");
+    setBotPresence();
+  });
+
+  ronBot.on("messageCreate", handleMessage);
+
+  //chatGPT wrote setBotPresence()
+
+  function setBotPresence() {
+    ronBot.user.setPresence({
+      activities: [{ name: "ronBot", type: "LISTENING" }],
+      status: "online",
+    });
+  }
+
+  function handleMessage(message) {
+    if (message.author.bot) return;
+
+    if (message.mentions.has(ronBot.user.id)) {
+      const command = message.content
+        .slice(ronBot.user.id.length)
+        .trim()
+        .toLowerCase();
+
+      switch (command) {
+        case "joke":
+          handleJokeCommand(message);
+          break;
+        case "kanye quote":
+          handleKanyeQuoteCommand(message);
+          break;
+        case "fun fact":
+          handleFunFactCommand(message);
+          break;
+        default:
+          handleUnknownCommand(message);
+          break;
+      }
     }
   }
-}
 
-function handleJokeCommand(message) {
-  const num = Math.floor(Math.random() * 5) + 1;
+  function handleJokeCommand(message) {
+    const num = Math.floor(Math.random() * 5) + 1;
 
-  if (num === 1) {
-    message.reply("You're the joke lol");
-  } else {
-    fetch("https://v2.jokeapi.dev/joke/Any")
+    if (num === 1) {
+      message.reply("You're the joke lol");
+    } else {
+      fetch("https://v2.jokeapi.dev/joke/Any")
+        .then((response) => response.json())
+        .then((json) => {
+          const joke =
+            json.type === "twopart"
+              ? `${json.setup}\n${json.delivery}`
+              : json.joke;
+          message.reply(joke);
+        })
+        .catch(() => {
+          message.reply("Failed to fetch a joke. Try again later.");
+        });
+    }
+  }
+
+  function handleKanyeQuoteCommand(message) {
+    fetch("https://api.kanye.rest")
       .then((response) => response.json())
       .then((json) => {
-        const joke =
-          json.type === "twopart" ? `${json.setup}\n${json.delivery}` : json.joke;
-        message.reply(joke);
+        message.reply(`Here is a quote by Kanye West: "${json.quote}"`);
       })
       .catch(() => {
-        message.reply("Failed to fetch a joke. Try again later.");
+        message.reply("Failed to fetch a Kanye quote. Try again later.");
       });
   }
-}
 
-function handleKanyeQuoteCommand(message) {
-  fetch("https://api.kanye.rest")
-    .then((response) => response.json())
-    .then((json) => {
-      message.reply(`Here is a quote by Kanye West: "${json.quote}"`);
-    })
-    .catch(() => {
-      message.reply("Failed to fetch a Kanye quote. Try again later.");
-    });
-}
+  function handleFunFactCommand(message) {
+    fetch("https://api.api-ninjas.com/v1/facts?limit=1")
+      .then((response) => response.json())
+      .then((json) => {
+        message.reply(json[0].fact);
+      })
+      .catch(() => {
+        message.reply("Failed to fetch a fun fact. Try again later.");
+      });
+  }
 
-function handleFunFactCommand(message) {
-  fetch("https://api.api-ninjas.com/v1/facts?limit=1")
-    .then((response) => response.json())
-    .then((json) => {
-      message.reply(json[0].fact);
-    })
-    .catch(() => {
-      message.reply("Failed to fetch a fun fact. Try again later.");
-    });
-}
+  function handleUnknownCommand(message) {
+    message.reply(
+      `Hey there! I'm not sure what you're asking. Here are the available commands:\n${formatCommands()}`
+    );
+  }
 
-function handleUnknownCommand(message) {
-  message.reply(
-    `Hey there! I'm not sure what you're asking. Here are the available commands:\n${formatCommands()}`
-  );
-}
+  //chatGPT wrote the formatCommands() method
 
-//chatGPT wrote the formatCommands() method
+  function formatCommands() {
+    return Object.entries(commandsObj)
+      .map(([command, description]) => `• **${command}**: ${description}`)
+      .join("\n");
+  }
 
-function formatCommands() {
-  return Object.entries(commandsObj)
-    .map(([command, description]) => `• **${command}**: ${description}`)
-    .join("\n");
-}
-
-const commandsObj = {
-  "joke": "Get a random joke or a 20% chance of being playfully insulted.",
-  "kanye quote": "Receive a random quote from Kanye West.",
-  "fun fact": "Learn a fun fact to amaze your friends.",
-};
+  const commandsObj = {
+    joke: "Get a random joke or a 20% chance of being playfully insulted.",
+    "kanye quote": "Receive a random quote from Kanye West.",
+    "fun fact": "Learn a fun fact to amaze your friends.",
+  };
+});
