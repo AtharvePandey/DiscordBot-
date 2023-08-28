@@ -53,38 +53,40 @@ const commandsObj = {
 ronBot.login(token); //connects to Discord, and my bot...
 
 ronBot.on("ready", () => {
+  //this is a small step that tells me the bot is live in the discord server
   //for debugging purposes...
   console.log("logged in, and connected to the API!");
 });
 
-ronBot.on("messageCreate", async (message) => {
+let pinged = false; //this is to keep track of if we want to excecute the second event listener (should only excecute after we ping the bot!!!)
+
+ronBot.once("messageCreate", (message) => {
+  //whenever a message is sent to the group...note the once is so that the eventlistener only works on ping, and not every time...
   if (message.author.bot) {
     return;
   }
 
-  let awaitResponse = false;
-
   if (message.mentions.has(ronBot.user.id)) {
+    //if the bot is pinged, then display the greeting
     // Display greeting and commands
-    let greeting =
-      greetingsArr[Math.floor(Math.random() * greetingsArr.length)] +
-      message.author.displayName +
-      "? \n";
+    let greeting = greetingsArr[Math.floor(Math.random() * greetingsArr.length)] + message.author.username + "? \n";
     greeting = greeting.concat("Here is what I can do: " + "\n\n");
     Object.entries(commandsObj).forEach(([key, value]) => {
-      greeting += `${key}: ${value}\n\n`;
+      //the entries method returns an array of the key value pairs
+      greeting += `${key}: ${value}\n\n`; //we just take the key and value and concat it to the greeting string
     });
-    await message.reply(greeting);
-    awaitResponse = true;
+    pinged = true;
+    message.reply(greeting); //reply to the user who has pinged with our greeting
   }
+});
 
-  if (awaitResponse) {
+//since above listener only excecutes once, we can use another listener for response handling...
+
+ronBot.once("messageCreate", (message) => {
+  if (pinged) {
     if (message.content.includes("joke")) {
-      //user has requested a joke
-      //generate a random number between 1 and 5, so theres a 20% chance user gets insulted when asked for a joke
-      let num = Math.floor(Math.random() * (5 - 1) + 1);
-      if (num == 1) {
-        //small chance the request invokes the bot to roast the user
+      let num = Math.floor(Math.random() * 5) + 1;
+      if (num === 1) {
         message.reply("you're the joke lol");
       } else {
         //now we call the api
@@ -113,9 +115,6 @@ ronBot.on("messageCreate", async (message) => {
         });
       });
     }
-  } else {
-    message.reply(
-      "Atharve made a small bug in the code, you shouldn't be reading this line at all, so someone tell him to quit being so bad at coding!"
-    );
   }
+  pinged = false;
 });
