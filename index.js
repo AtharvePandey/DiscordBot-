@@ -1,6 +1,8 @@
 const { BOT_TOKEN } = require("./secretVars");
-const { Client, Message, SlashCommandBuilder } = require("discord.js"); //returns an object of discord.js and gives reference to "Client" variable
-const ronBot = new Client();
+const { Client, Message, SlashCommandBuilder, GatewayIntentBits } = require("discord.js"); //returns an object of discord.js and gives reference to "Client" variable
+const ronBot = new Client({
+    intents: [GatewayIntentBits.MessageContent]
+});
 const token = BOT_TOKEN;
 
 //json for the joke api
