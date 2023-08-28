@@ -45,7 +45,7 @@ const greetingsArr = [
 ];
 
 const commandsObj = {
-  joke: "insults whoever asked for it (20% chance), or makes an original joke fetched from the joke API",
+  "joke": "insults whoever asked for it (20% chance), or makes an original joke fetched from the joke API",
   "kanye quote": "returns a random quote from kanye using the rest API",
   "fun fact": "returns a random fun fact",
 };
