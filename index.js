@@ -82,7 +82,7 @@ ronBot.once("messageCreate", (message) => {
 
 //since above listener only excecutes once, we can use another listener for response handling...
 
-ronBot.once("messageCreate", (message) => {
+ronBot.on("messageCreate", (message) => {
   if (pinged) {
     if (message.content.includes("joke")) {
       let num = Math.floor(Math.random() * 5) + 1;
